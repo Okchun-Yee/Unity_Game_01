@@ -9,7 +9,7 @@ public class Orbit : MonoBehaviour
     Vector3 offset;
     void Start()
     {
-        offset = transform.position - target.position;  //ÇÃ·¹ÀÌ¾î¿Í ¿ÀºêÁ§Æ® »çÀÌÀÇ Â÷ÀÌ°ª
+        offset = transform.position - target.position;  //ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½
     }
 
     // Update is called once per frame

@@ -12,55 +12,55 @@ namespace Player
         float vAxis;
         bool walkDown;  //walk
         bool jmpDown;   //jump
-        bool iDown = false;     //e : 오브젝트 상호작용 키
-        bool swapDown_1;    // 무기 스왑 1, 2, 3
+        bool iDown = false;     //e : ??????? ?????? ?
+        bool swapDown_1;    // ???? ???? 1, 2, 3
         bool swapDown_2;
         bool swapDown_3;
         bool gDown;
 
-        //공격 변수 모음
+        //???? ???? ????
         bool fDown;
         bool rDown;
         bool isReload = false;
-        float fireDealy; //공격 딜레이
-        bool isFireReady = true;   //공격 준비 완료 변수
+        float fireDelay; //???? ??????
+        bool isFireReady = true;   //???? ??? ??? ????
         public Camera followCamera;
+        bool isDamage;
 
-
-        //Item 변수
+        //Item ????
         public int ammo;
         public int coin;
         public int health;
-        public int hasGreandes;
+        public int hasGrenades;
 
-        //Item 변수 최대치
+        //Item ???? ????
         public int ammoMax;
         public int coinMax;
         public int healthMax;
-        public int hasGreandesMax;
+        public int hasGrenadesMax;
 
-        public GameObject[] weapons;    //무기 오브젝트 배열
-        public bool[] hasWeapons;       //무기 소지 (인벤토리 배열)
-        public GameObject[] Greandes;
+        public GameObject[] weapons;    //???? ??????? ?占쏙옙
+        public bool[] hasWeapons;       //???? ???? (?占쏙옙??? ?占쏙옙)
+        public GameObject[] Grenades;
 
-        //특수 공격 - 수류탄 투척
-        public GameObject greandeObj;
+        //??? ???? - ????? ???
+        public GameObject grenadeObj;
 
 
-        bool isJump = false;    //jump 상태 확인
-        bool isDodge = false;   //Dodge 상태 확인
-        bool isSwap = false;    //swap 상태확인
+        bool isJump = false;    //jump ???? ???
+        bool isDodge = false;   //Dodge ???? ???
+        bool isSwap = false;    //swap ???????
 
-        GameObject nearObj; //가까운 아이템 변수
-        Weapon equipweapon; //현재 장착중인 아이템 변수
+        GameObject nearObj; //????? ?????? ????
+        Weapon equipweapon; //???? ???????? ?????? ????
 
 
         public Vector3 moveVec; //about Player Move
         public Vector3 dodgeVec; //about Player Move
         Rigidbody rigid;
         Animator anim;
-
-        //벽 관통 방지 변수
+        MeshRenderer[] meshes;
+        //?? ???? ???? ????
         bool isBorder = false;
 
         // Start is called before the first frame update
@@ -68,6 +68,7 @@ namespace Player
         {
             rigid = GetComponent<Rigidbody>();
             anim = GetComponentInChildren<Animator>();
+            meshes = GetComponentsInChildren<MeshRenderer>();
         }
 
         // Update is called once per frame
@@ -87,22 +88,22 @@ namespace Player
 
         void getInput()
         {
-            hAxis = Input.GetAxisRaw("Horizontal"); //GetAxisRaw = Axis값을 정수로 반환하는 함수
-            vAxis = Input.GetAxisRaw("Vertical");   //입력은 Input Manage에서 관리한다.
+            hAxis = Input.GetAxisRaw("Horizontal"); //GetAxisRaw = Axis???? ?????? ?????? ???
+            vAxis = Input.GetAxisRaw("Vertical");   //????? Input Manage???? ???????.
             walkDown = Input.GetButtonDown("Walk");
             jmpDown = Input.GetButtonDown("Jump");
-            iDown = Input.GetButtonDown("Interation");  //무기 먹기
+            iDown = Input.GetButtonDown("Interation");  //???? ???
             swapDown_1 = Input.GetButtonDown("Swap_1");
             swapDown_2 = Input.GetButtonDown("Swap_2");
             swapDown_3 = Input.GetButtonDown("Swap_3");
-            fDown = Input.GetButton("Fire1");  //공격 키 = 마우스 왼쪽 클릭 
-            rDown = Input.GetButtonDown("Reload"); //장전
-            gDown = Input.GetButtonDown("Fire2"); //투척 공격 키 = 마우스 오른쪽 클릭
+            fDown = Input.GetButton("Fire1");  //???? ? = ???占폢 ???? ??? 
+            rDown = Input.GetButtonDown("Reload"); //????
+            gDown = Input.GetButtonDown("Fire2"); //??? ???? ? = ???占폢 ?????? ???
         }
 
         void move()
         {
-            moveVec = new Vector3(hAxis, 0, vAxis).normalized; /*normalized 사용시 대각선 방향도 같은 속도로 이동 원래 대각선 이동시 피타고라스로 인해 더 큰값을 가짐*/
+            moveVec = new Vector3(hAxis, 0, vAxis).normalized; /*normalized ???? ?占폨?? ???? ???? ????? ??? ???? ?占폨?? ????? ???????? ???? ?? ????? ????*/
             if (isDodge) { moveVec = dodgeVec; }
             if (isSwap || !isFireReady || isReload) { moveVec = Vector3.zero; }
             if (!isBorder) {
@@ -116,9 +117,9 @@ namespace Player
 
         void turn()
         {
-            transform.LookAt(transform.position + moveVec);  //지정된 벡터를 향해서 회전시켜주는 함수
+            transform.LookAt(transform.position + moveVec);  //?????? ????? ????? ?????????? ???
 
-            //마우스에 따른 회전
+            //???占폢?? ???? ???
             if(fDown)
             {
                 Ray ray = followCamera.ScreenPointToRay(Input.mousePosition);
@@ -147,19 +148,19 @@ namespace Player
         {
             if (equipweapon == null) return;
 
-            fireDealy += Time.deltaTime;
-            isFireReady = equipweapon.rate < fireDealy;
+            fireDelay += Time.deltaTime;
+            isFireReady = equipweapon.rate < fireDelay;
 
             if (fDown && isFireReady && !isDodge && !isSwap) {
                 equipweapon.Use();
                 anim.SetTrigger(equipweapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
-                fireDealy = 0;
+                fireDelay = 0;
             }
         }
 
         void Grenade()
         {
-            if (hasGreandes == 0) return;
+            if (hasGrenades == 0) return;
             if (gDown && !isSwap && !isReload)
             {
                 Ray ray = followCamera.ScreenPointToRay(Input.mousePosition);
@@ -169,13 +170,13 @@ namespace Player
                     Vector3 nextVec = rayHit.point - transform.position;
                     nextVec.y = 2;
 
-                    GameObject instantGrenade = Instantiate(greandeObj, transform.position, transform.rotation);
+                    GameObject instantGrenade = Instantiate(grenadeObj, transform.position, transform.rotation);
                     Rigidbody rigidGrenade = instantGrenade.GetComponent<Rigidbody>();
                     rigidGrenade.AddForce(nextVec * 1.2f, ForceMode.Impulse);
                     rigidGrenade.AddTorque(Vector3.back * 10, ForceMode.Impulse);
 
-                    hasGreandes--;
-                    Greandes[hasGreandes].SetActive(false);
+                    hasGrenades--;
+                    Grenades[hasGrenades].SetActive(false);
                 }
             }
         }
@@ -199,7 +200,7 @@ namespace Player
         }
         void ReloadOut()
         {
-            //잔여탄 고려하기 
+            //???? ??????? 
             int reAmmo = 
                 ammo + equipweapon.curAmmo < equipweapon.maxAmmo 
                 ? ammo : equipweapon.maxAmmo - equipweapon.curAmmo;
@@ -228,12 +229,12 @@ namespace Player
             isDodge = false;
         }
 
-        int equipweapomIndex = -1;
+        int equipweaponIndex = -1;
         void itemSwap()
         {
-            if(swapDown_1 && (!hasWeapons[0] || equipweapomIndex == 0)) { return; }
-            if (swapDown_2 && (!hasWeapons[1] || equipweapomIndex == 1)) { return; }
-            if (swapDown_3 && (!hasWeapons[2] || equipweapomIndex == 2)) { return; }
+            if(swapDown_1 && (!hasWeapons[0] || equipweaponIndex == 0)) { return; }
+            if (swapDown_2 && (!hasWeapons[1] || equipweaponIndex == 1)) { return; }
+            if (swapDown_3 && (!hasWeapons[2] || equipweaponIndex == 2)) { return; }
 
             int weaponIndex = -1;
             if (swapDown_1) weaponIndex = 0;
@@ -243,7 +244,7 @@ namespace Player
             if ((swapDown_1 || swapDown_2 || swapDown_3) && isJump!= true && isDodge != true )
             {
                 if(equipweapon!=null) equipweapon.gameObject.SetActive(false);
-                equipweapomIndex = weaponIndex;
+                equipweaponIndex = weaponIndex;
                 equipweapon = weapons[weaponIndex].GetComponent<Weapon>();
                 equipweapon.gameObject.SetActive(true);
 
@@ -264,9 +265,9 @@ namespace Player
                     Item item = nearObj.GetComponent<Item>();
                     int weaponIndex = item.value;
                     
-                    hasWeapons[weaponIndex] = true; //인벤토리 배열에 저장
+                    hasWeapons[weaponIndex] = true; //?占쏙옙??? ?占쏙옙?? ????
 
-                    Destroy(nearObj);   //먹은 아이템 
+                    Destroy(nearObj);   //???? ?????? 
                 }
             }
         }
@@ -314,19 +315,41 @@ namespace Player
                         if (health > healthMax) health = healthMax;
                         break;
                     case Item.itemType.itemGrenade:
-                        if (hasGreandes == hasGreandesMax)
+                        if (hasGrenades == hasGrenadesMax)
                         {
-                            Debug.Log("Max Greandes");
+                            Debug.Log("Max Grenades");
                             return;
                         }
-                        Debug.Log("Take Greandes");
-                        Greandes[hasGreandes].SetActive(true);
-                        hasGreandes += item.value;
+                        Debug.Log("Take Grenades");
+                        Grenades[hasGrenades].SetActive(true);
+                        hasGrenades += item.value;
                         break;
                 }
                 Destroy(other.gameObject);
             }
+            else if(other.tag == "EnemyBullet"){
+                if(!isDamage){
+                    Bullet enemybullet = other.GetComponent<Bullet>();
+                    health -= enemybullet.damage;
+                    StartCoroutine(onDamage());
+                }
+            }
         }
+
+        IEnumerator onDamage()
+        {
+            isDamage = true;
+            foreach(MeshRenderer mesh in meshes){
+                mesh.material.color = Color.yellow;
+            }
+            yield return new WaitForSeconds(0.5f);
+
+            isDamage = false;
+            foreach(MeshRenderer mesh in meshes){
+                mesh.material.color = Color.white;
+            }
+        }
+
         void OnTriggerStay(Collider other)
         {
             if(other.tag=="weapon") nearObj = other.gameObject;

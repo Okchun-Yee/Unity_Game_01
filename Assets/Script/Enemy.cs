@@ -13,7 +13,7 @@ public class Enemy : MonoBehaviour
     Rigidbody rigid;
     BoxCollider boxCollider;
 
-    //몬스터 피격
+    //???? ???
     Material mat;
 
     NavMeshAgent nav;
@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody>(); 
         boxCollider = GetComponent<BoxCollider>();
-        //재질은 바로 컴포넌트를 가져오는 것이 아닌 매쉬 -> 재질 순서로 가져오기
+        //?????? ??? ????????? ???????? ???? ??? ??? -> ???? ?????? ????????
         mat = GetComponentInChildren<MeshRenderer>().material;
         anim = GetComponentInChildren<Animator>();
         nav = GetComponent<NavMeshAgent>();
