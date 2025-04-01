@@ -5,11 +5,15 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    public enum Type {A, B, C};
+    public Type enemyType;
     public int maxHealth;
     public int curHealth;
     public Transform target;
     public bool isChase;
-
+    //meleeAttack
+    public BoxCollider meleeArea;
+    public bool isAttack;
     Rigidbody rigid;
     BoxCollider boxCollider;
 
@@ -38,9 +42,10 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isChase)
+        if (nav.enabled)
         {
             nav.SetDestination(target.position);
+            nav.isStopped = !isChase;
         }
         
     }
@@ -81,6 +86,8 @@ public class Enemy : MonoBehaviour
         StartCoroutine (onDamge(reactVec, true));
     }
 
+
+
     void FreezeVelocity()
     {
         if (isChase)
@@ -90,8 +97,68 @@ public class Enemy : MonoBehaviour
         }
 
     }
+    void Targerting(){
+        float targetRadius = 0;
+        float targetRange = 0;
+
+        switch (enemyType){
+            case Type.A:
+                targetRadius = 1.5f;
+                targetRange = 3f;
+                break;
+            case Type.B:
+                targetRadius = 1f;
+                targetRange = 12f;
+                break;
+            case Type.C:
+                targetRadius = 0;
+                targetRange = 0;
+                break;
+        }
+        RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
+            targetRadius, transform.forward, targetRange, LayerMask.GetMask("Player"));
+        if(rayHits.Length > 0 && !isAttack){
+            StartCoroutine(Attack());
+        }
+    }
+    IEnumerator Attack(){
+        isChase = false;
+        isAttack = true;
+        anim.SetBool("isAttack", true);
+        
+        switch (enemyType){
+            case Type.A:
+                yield return new WaitForSeconds(0.6f);
+                meleeArea.enabled = true;
+
+                yield return new WaitForSeconds(1.6f);
+                meleeArea.enabled = false;
+
+                yield return new WaitForSeconds(0.8f);
+                break;
+            case Type.B:
+                yield return new WaitForSeconds(0.2f);
+                rigid.AddForce(transform.forward * 20, ForceMode.Impulse);
+                meleeArea.enabled = true;
+
+                yield return new WaitForSeconds(0.5f);
+                rigid.velocity = Vector3.zero;
+                meleeArea.enabled = false;
+
+                yield return new WaitForSeconds(2f);
+                break;
+            case Type.C:
+
+                break;
+        }
+        
+        isChase = true;
+        isAttack = false;
+        anim.SetBool("isAttack", false);
+    }
     private void FixedUpdate()
     {
+        Targerting();
         FreezeVelocity();
     }
 
