@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     //meleeAttack
     public BoxCollider meleeArea;
     public bool isAttack;
+    public GameObject bullet;
     Rigidbody rigid;
     BoxCollider boxCollider;
 
@@ -111,8 +112,8 @@ public class Enemy : MonoBehaviour
                 targetRange = 12f;
                 break;
             case Type.C:
-                targetRadius = 0;
-                targetRange = 0;
+                targetRadius = 0.5f;
+                targetRange = 25;
                 break;
         }
         RaycastHit[] rayHits = Physics.SphereCastAll(transform.position,
@@ -136,6 +137,7 @@ public class Enemy : MonoBehaviour
 
                 yield return new WaitForSeconds(0.8f);
                 break;
+
             case Type.B:
                 yield return new WaitForSeconds(0.2f);
                 rigid.AddForce(transform.forward * 20, ForceMode.Impulse);
@@ -147,7 +149,14 @@ public class Enemy : MonoBehaviour
 
                 yield return new WaitForSeconds(2f);
                 break;
+
             case Type.C:
+                yield return new WaitForSeconds(0.5f);
+                GameObject instantBullet = Instantiate(bullet, transform.position, transform.rotation);
+                Rigidbody rigidBullet = instantBullet.GetComponent<Rigidbody>();
+                rigidBullet.velocity = transform.forward * 20;
+
+                yield return new WaitForSeconds(2f);
 
                 break;
         }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -331,6 +332,7 @@ namespace Player
                 if(!isDamage){
                     Bullet enemybullet = other.GetComponent<Bullet>();
                     health -= enemybullet.damage;
+                    if(other.GetComponent<Rigidbody>() != null) { Destroy(other.gameObject); }
                     StartCoroutine(onDamage());
                 }
             }
