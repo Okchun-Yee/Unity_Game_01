@@ -6,6 +6,7 @@ public class Bullet : MonoBehaviour
 {
     public int damage;
     public bool isMelee;
+    public bool isRock;
     void Start()
     {
         
@@ -18,7 +19,7 @@ public class Bullet : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Floor")
+        if (!isRock && collision.gameObject.tag == "Floor")
         {
             Destroy(gameObject, 1);
         }

@@ -67,11 +67,14 @@
     <Compile Include="Assets\Script\Missile.cs" />
     <Compile Include="Assets\Script\Orbit.cs" />
     <Compile Include="Assets\Script\Enemy.cs" />
+    <Compile Include="Assets\Script\BossRock.cs" />
     <Compile Include="Assets\Script\Item.cs" />
     <Compile Include="Assets\QuarterView 3D Action BE5\ReadMe\Scripts\ReadmeBE5.cs" />
     <Compile Include="Assets\Script\Bullet.cs" />
     <Compile Include="Assets\Script\Player.cs" />
+    <Compile Include="Assets\Script\BossMissile.cs" />
     <Compile Include="Assets\Script\Weapon.cs" />
+    <Compile Include="Assets\Script\Boss.cs" />
     <Compile Include="Assets\Script\Follow.cs" />
   </ItemGroup>
   <ItemGroup>

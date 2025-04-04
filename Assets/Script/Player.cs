@@ -332,23 +332,33 @@ namespace Player
                 if(!isDamage){
                     Bullet enemybullet = other.GetComponent<Bullet>();
                     health -= enemybullet.damage;
-                    if(other.GetComponent<Rigidbody>() != null) { Destroy(other.gameObject); }
-                    StartCoroutine(onDamage());
+
+                    bool isBossAttack = other.name == "BossMelee Area";
+                    StartCoroutine(onDamage(isBossAttack));
                 }
+
+                if(other.GetComponent<Rigidbody>() != null) { Destroy(other.gameObject); }
             }
         }
 
-        IEnumerator onDamage()
+        IEnumerator onDamage(bool isBossAtk)
         {
             isDamage = true;
             foreach(MeshRenderer mesh in meshes){
                 mesh.material.color = Color.yellow;
             }
-            yield return new WaitForSeconds(0.5f);
+            if (isBossAtk){
+                rigid.AddForce(transform.forward * -25, ForceMode.Impulse);
+            }
+
+            yield return new WaitForSeconds(1f);
 
             isDamage = false;
             foreach(MeshRenderer mesh in meshes){
                 mesh.material.color = Color.white;
+            }
+            if (isBossAtk){
+                rigid.velocity = Vector3.zero;
             }
         }
 
