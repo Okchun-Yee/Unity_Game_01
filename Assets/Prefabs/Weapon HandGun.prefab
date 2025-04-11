@@ -4928,7 +4928,7 @@ GameObject:
   - component: {fileID: 3009555067704508721}
   m_Layer: 0
   m_Name: Weapon HandGun
-  m_TagString: Untagged
+  m_TagString: weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4941,7 +4941,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7530948552744724408}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5032,8 +5032,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a9eb923e4f62c24280af5294ed686be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
-  value: 0
+  type: 4
+  value: 1
 --- !u!1 &8568300414628964457
 GameObject:
   m_ObjectHideFlags: 0
@@ -5078,7 +5078,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.654902, g: 0.7843138, b: 0.37647063, a: 1}
-  m_Intensity: 8
+  m_Intensity: 6
   m_Range: 2
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

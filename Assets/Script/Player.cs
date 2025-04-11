@@ -27,6 +27,7 @@ namespace Player
         bool isFireReady = true;   //???? ??? ??? ????
         public Camera followCamera;
         bool isDamage;
+        public bool isShop;
 
         //Item ????
         public int ammo;
@@ -106,7 +107,7 @@ namespace Player
         {
             moveVec = new Vector3(hAxis, 0, vAxis).normalized; /*normalized ???? ?�O?? ???? ???? ????? ??? ???? ?�O?? ????? ???????? ???? ?? ????? ????*/
             if (isDodge) { moveVec = dodgeVec; }
-            if (isSwap || !isFireReady || isReload) { moveVec = Vector3.zero; }
+            if (isSwap || !isFireReady || isReload || isShop) { moveVec = Vector3.zero; }
             if (!isBorder) {
                 transform.position += 
                     moveVec * speed * (walkDown ? 0.3f : 1f) * Time.deltaTime; 
@@ -136,7 +137,7 @@ namespace Player
 
         void jump()
         {
-            if (jmpDown&& moveVec==Vector3.zero && !isJump && !isDodge && !isSwap && !isReload)
+            if (jmpDown&& moveVec==Vector3.zero && !isJump && !isDodge && !isSwap && !isReload && !isShop)
             {
                 rigid.AddForce(Vector3.up * 15, ForceMode.Impulse);
                 anim.SetBool("is_Jump", true);
@@ -152,7 +153,7 @@ namespace Player
             fireDelay += Time.deltaTime;
             isFireReady = equipweapon.rate < fireDelay;
 
-            if (fDown && isFireReady && !isDodge && !isSwap) {
+            if (fDown && isFireReady && !isDodge && !isSwap && !isShop) {
                 equipweapon.Use();
                 anim.SetTrigger(equipweapon.type == Weapon.Type.Melee ? "doSwing" : "doShot");
                 fireDelay = 0;
@@ -162,7 +163,7 @@ namespace Player
         void Grenade()
         {
             if (hasGrenades == 0) return;
-            if (gDown && !isSwap && !isReload)
+            if (gDown && !isSwap && !isReload &&!isShop)
             {
                 Ray ray = followCamera.ScreenPointToRay(Input.mousePosition);
                 RaycastHit rayHit;
@@ -189,7 +190,7 @@ namespace Player
                 return;
             if (ammo == 0)
                 return;
-            if(rDown && !isJump && !isSwap && !isDodge && isFireReady)
+            if(rDown && !isJump && !isSwap && !isDodge && isFireReady && !isShop)
             {
                 Debug.Log("Reloading");
                 isReload = true;
@@ -269,6 +270,13 @@ namespace Player
                     hasWeapons[weaponIndex] = true; //?��??? ?��?? ????
 
                     Destroy(nearObj);   //???? ?????? 
+                }
+                else if (nearObj.tag == "Shop")
+                {
+                    //Debug.Log("check");
+                    Shop shop = nearObj.GetComponent<Shop>();
+                    shop.Enter(this);
+                    isShop = true;
                 }
             }
         }
@@ -364,13 +372,23 @@ namespace Player
 
         void OnTriggerStay(Collider other)
         {
-            if(other.tag=="weapon") nearObj = other.gameObject;
+            if(other.tag=="weapon" || other.tag == "Shop") 
+            {
+                nearObj = other.gameObject;
+            }
 
             //Debug.Log(nearObj.name);
         }
         void OnTriggerExit(Collider other)
         {
             if (other.tag == "weapon") nearObj = null;
+            else if (other.tag == "Shop") {
+                Shop shop = nearObj.GetComponent<Shop>();
+                isShop = false;
+                shop.Exit();
+                
+                nearObj = null;
+            }
         }
     }
 }
